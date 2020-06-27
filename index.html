@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BLOCKS is traditional block puzzle game</title>
+    <script src="https://unpkg.com/vue"></script>
+    <meta name="viewport" content="width=device-width">
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div class="pause" v-if="isPause">
+            <button onClick="doAction();">{{stlabel}}</button>
+        </div>
+        <section class="view">
+            <div class="next"></div>
+            <div class="board"></div>
+        </section>
+        <section class="control">
+            <div class="control-part cursor">
+              <button class="cursorL"><i class="fas fa-angle-left"></i></button>
+              <button class="cursorR"><i class="fas fa-angle-right"></i></button>
+            </div>
+            <div class="control-part hoge">
+              <button class="btnPause" onClick="doPause();">Pause</button>
+            </div>
+            <div class="control-part rotate">
+              <button class="rotateL"><i class="fas fa-undo"></i></button>
+              <button class="rotateR"><i class="fas fa-redo"></i></button>
+            </div>
+        </section>
+    </div>
+    <script>
+        var data = {
+          numWidth: 10,
+          numHeight: 20,
+          brocks: [
+            ['#aaccff',[1],[1],[1],[1]],
+            ['#aaaa00',[1,1],[1,1]],
+            ['#77aa77',[0,1,0],[1,1,1]],
+            ['#ff4444',[1,0],[1,0],[1,1]],
+            ['#4444ff',[0,1],[0,1],[1,1]],
+            ['#ccaa00',[0,1],[1,1],[1,0]],
+            ['#aa00aa',[1,0],[1,1],[0,1]]
+          ],
+          stack: [],
+          next: 0,
+          isPause: true,
+          stlabel: 'スタート'
+        };
+        var app = new Vue({
+          el: '#app',
+          data: data,
+        });
+        function doAction() {
+          data.isPause = false;
+          data.stlabel = '再開';
+          console.log('start');
+        };
+        function doPause() {
+          data.isPause = true;
+          console.log('pause');
+        };
+    </script>
+</body>
+</html>
