@@ -20,6 +20,7 @@
 }
 .pause button{
     width: 350px;
+    max-width: 98%;
     height: 60px;
     margin: auto;
     border: solid 1px #007700;
@@ -28,6 +29,30 @@
     line-height: 60px;
     font-size: 30px;
     color: #fff;
+}
+.view{
+    position: relative;
+    background-color: #777;
+    grid-template-rows: 40px fr;
+    grid-template-columns: 100px 30px;
+}
+.next,
+.data,
+.board{
+    box-sizing: border-box;
+    border: solid 1px black;
+}
+.next{
+    grid-row: 2 / 2;
+    grid-column: 1 /2;
+}
+.data{
+    grid-row: 2 / 2;
+    grid-column: 2 / 2;
+}
+.board{
+    grid-row: 1 / 2;
+    grid-column: 1 / 1;
 }
 .control{
     position: fixed;
