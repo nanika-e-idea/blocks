@@ -14,8 +14,8 @@
       </div>
       <section class="view">
         <div class="wrapper">
-          <div class="board">{{boardStatus}}</div>
-          <div class="next">{{nextBlock}}</div>
+          <div class="board"><p v-html="boardStatus"></p></div>
+          <div class="next"><p v-html="nextBlock"></p></div>
           <div class="score">
             <h1>SCORE</h1>
             <p>{{valScore}}</p>
@@ -56,8 +56,8 @@
           next: 0,
           isPause: true,
           stlabel: 'スタート',
-          boardStatus: '□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n',
-          nextBlock: '□□□□□\n□□□□□\n□□■□□\n□■■■□\n□□□□□\n'
+          boardStatus: '□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>',
+          nextBlock: '□□□□□<br>□□□□□<br>□□■□□<br>□■■■□<br>□□□□□<br>'
         };
         var app = new Vue({
           el: '#app',
