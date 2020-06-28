@@ -9,44 +9,55 @@
 </head>
 <body>
     <div id="app">
-        <div class="pause" v-if="isPause">
-            <button onClick="doAction();">{{stlabel}}</button>
+      <div class="pause" v-if="isPause">
+        <button onClick="doAction();">{{stlabel}}</button>
+      </div>
+      <section class="view">
+        <div class="wrapper">
+          <div class="board">{{boardStatus}}</div>
+          <div class="next">{{nextBlock}}</div>
+          <div class="score">
+            <h1>SCORE</h1>
+            <p>{{valScore}}</p>
+            <hr>
+            <h1>TIME</h1>
+            <p>{{valHour}}:{{valMinuit}}:{{valSecond}}</p>
+          </div>
         </div>
-        <section class="view">
-            <div class="next"></div>
-            <div class="board"></div>
-        </section>
-        <section class="control">
-            <div class="control-part cursor">
-              <button class="cursorL"><i class="fas fa-angle-left"></i></button>
-              <button class="cursorR"><i class="fas fa-angle-right"></i></button>
-            </div>
-            <div class="control-part hoge">
-              <button class="btnPause" onClick="doPause();">Pause</button>
-            </div>
-            <div class="control-part rotate">
-              <button class="rotateL"><i class="fas fa-undo"></i></button>
-              <button class="rotateR"><i class="fas fa-redo"></i></button>
-            </div>
-        </section>
+      </section>
+      <section class="control">
+        <div class="control-part cursor">
+          <button class="cursorL"><i class="fas fa-angle-left"></i></button>
+          <button class="cursorR"><i class="fas fa-angle-right"></i></button>
+        </div>
+        <div class="control-part hoge">
+          <button class="btnPause" onClick="doPause();">Pause</button>
+        </div>
+        <div class="control-part rotate">
+          <button class="rotateL"><i class="fas fa-undo"></i></button>
+          <button class="rotateR"><i class="fas fa-redo"></i></button>
+        </div>
+      </section>
     </div>
     <script>
         var data = {
           numWidth: 10,
           numHeight: 20,
           brocks: [
-            ['#aaccff',[1],[1],[1],[1]],
-            ['#aaaa00',[1,1],[1,1]],
-            ['#77aa77',[0,1,0],[1,1,1]],
-            ['#ff4444',[1,0],[1,0],[1,1]],
-            ['#4444ff',[0,1],[0,1],[1,1]],
-            ['#ccaa00',[0,1],[1,1],[1,0]],
-            ['#aa00aa',[1,0],[1,1],[0,1]]
+            ['#aaccff',[0,0,0,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0]],
+            ['#aaaa00',[0,0,0,0,0],[0,1,1,0,0],[0,1,1,0,0],[0,0,0,0,0],[0,0,0,0,0]],
+            ['#77aa77',[0,0,0,0,0],[0,0,1,0,0],[0,1,1,1,0],[0,0,0,0,0],[0,0,0,0,0]],
+            ['#ff4444',[0,0,0,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,1,0],[0,0,0,0,0]],
+            ['#4444ff',[0,0,0,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,1,1,0,0],[0,0,0,0,0]],
+            ['#ccaa00',[0,0,0,0,0],[0,0,1,0,0],[0,0,1,1,0],[0,0,0,1,0],[0,0,0,0,0]],
+            ['#aa00aa',[0,0,0,0,0],[0,0,1,0,0],[0,1,1,0,0],[0,1,0,0,0],[0,0,0,0,0]]
           ],
           stack: [],
           next: 0,
           isPause: true,
-          stlabel: 'スタート'
+          stlabel: 'スタート',
+          boardStatus: '□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n□□□□□□□□□□\n',
+          nextBlock: '□□□□□\n□□□□□\n□□■□□\n□■■■□\n□□□□□\n'
         };
         var app = new Vue({
           el: '#app',
