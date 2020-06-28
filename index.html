@@ -16,12 +16,12 @@
         <div class="wrapper">
           <div class="board"><p v-html="boardStatus"></p></div>
           <div class="next"><p v-html="nextBlock"></p></div>
-          <div class="score">
+          <div class="data">
             <h1>SCORE</h1>
             <p>{{valScore}}</p>
-            <hr>
+            
             <h1>TIME</h1>
-            <p>{{valHour}}:{{valMinuit}}:{{valSecond}}</p>
+            <p>{{strTime}}</p>
           </div>
         </div>
       </section>
@@ -56,13 +56,33 @@
           next: 0,
           isPause: true,
           stlabel: 'スタート',
-          boardStatus: '□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>',
-          nextBlock: '□□□□□<br>□□□□□<br>□□■□□<br>□■■■□<br>□□□□□<br>'
+          boardStatus: '□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□',
+          nextBlock: '□□□□□<br>□□□□□<br>□□■□□<br>□■■■□<br>□□□□□',
+          valScore: 0,
+          valHour: 0,
+          valMinuit: '00',
+          valSecond: '00',
+          countTime: new Date().setTime(0),
+          strTime: '0:00:00'
         };
         var app = new Vue({
           el: '#app',
           data: data,
         });
+        window.onload = function(){
+            setTimeout(function(){
+                data.countTime.setTime(data.countTime.getTime() + 1000);
+                data.strTime = data.countTime.getHours() + ':' + ('0' + data.countTime.getMinutes()).slice(-2) + ':' + ('0' + data.countTime.getSeconds()).slice(-2);
+            }, 1000);
+        };
+        function onload() {
+            //if(!data.isPause){
+                setTimeout(function(){
+                    data.countTime.setTime(data.countTime.getTime() + 1000);
+                    data.strTime = data.countTime.getHours() + ':' + ('0' + data.countTime.getMinutes()).slice(-2) + ':' + ('0' + data.countTime.getSeconds()).slice(-2);
+                }, 1000);
+            //}
+        };
         function doAction() {
           data.isPause = false;
           data.stlabel = '再開';
