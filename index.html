@@ -19,7 +19,7 @@
           <div class="data">
             <h1>SCORE</h1>
             <p>{{valScore}}</p>
-            
+            <hr>
             <h1>TIME</h1>
             <p>{{strTime}}</p>
           </div>
@@ -69,17 +69,13 @@
           el: '#app',
           data: data,
         });
-        window.onload = function(){
-            setTimeout(function(){
-                data.countTime.setTime(data.countTime.getTime() + 1000);
-                data.strTime = data.countTime.getHours() + ':' + ('0' + data.countTime.getMinutes()).slice(-2) + ':' + ('0' + data.countTime.getSeconds()).slice(-2);
-            }, 1000);
-        };
+        window.onload = onload();
         function onload() {
             //if(!data.isPause){
                 setTimeout(function(){
                     data.countTime.setTime(data.countTime.getTime() + 1000);
                     data.strTime = data.countTime.getHours() + ':' + ('0' + data.countTime.getMinutes()).slice(-2) + ':' + ('0' + data.countTime.getSeconds()).slice(-2);
+                    alert('count!');
                 }, 1000);
             //}
         };
