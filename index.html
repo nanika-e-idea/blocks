@@ -59,10 +59,7 @@
           boardStatus: '□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□',
           nextBlock: '□□□□□<br>□□□□□<br>□□■□□<br>□■■■□<br>□□□□□',
           valScore: 0,
-          valHour: 0,
-          valMinuit: '00',
-          valSecond: '00',
-          countTime: new Date().setTime(0),
+          countTime: 0,
           strTime: '0:00:00'
         };
         var app = new Vue({
@@ -71,13 +68,15 @@
         });
         window.onload = onload();
         function onload() {
-            //if(!data.isPause){
-                setTimeout(function(){
-                    data.countTime.setTime(data.countTime.getTime() + 1000);
-                    data.strTime = data.countTime.getHours() + ':' + ('0' + data.countTime.getMinutes()).slice(-2) + ':' + ('0' + data.countTime.getSeconds()).slice(-2);
-                    alert('count!');
-                }, 1000);
-            //}
+            setInterval(function(){
+                if(!data.isPause){
+                    data.countTime += 1;
+                    ss = data.countTime % 60;
+                    mm = (data.countTime - ss) % 3600;
+                    h = (data.countTime - mm - ss) / 216000;
+                    data.strTime = h + ':' + ('0' + mm).slice(-2) + ':' + ('0' + ss).slice(-2);
+                }
+            }, 1000);
         };
         function doAction() {
           data.isPause = false;
