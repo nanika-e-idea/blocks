@@ -48,6 +48,9 @@ html{
     text-align: center;
 }
 .next{
+    display: grid;
+    grid-template-rows: repeat(18px 1px);
+    grid-template-columns: repeat(18px 1px);
     grid-row: 1 / 2;
     grid-column: 3 /4;
     font-size: 1rem;
@@ -59,6 +62,9 @@ html{
     grid-column: 3 / 4;
 }
 .board{
+    display: grid;
+    grid-template-rows: repeat(20px);
+    grid-template-columns: repeat(20px);
     grid-row: 1 / 4;
     grid-column: 1 / 2;
     font-size: 1rem;
@@ -69,6 +75,30 @@ html{
 .board p{
     margin: 0;
     padding: 0;
+}
+.dspgrid{
+    background-color: #444;
+}
+.bl-1{
+    background-color: #aaccff;
+}
+.bl-2{
+    background-color: #aaaa00;
+}
+.bl-3{
+    background-color: #77aa77;
+}
+.bl-4{
+    background-color: #ff4444;
+}
+.bl-5{
+    background-color: #4444ff;
+}
+.bl-6{
+    background-color: #ccaa00;
+}
+.bl-7{
+    background-color: #aa00aa;
 }
 .data h1{
     margin-top: 5px; 
