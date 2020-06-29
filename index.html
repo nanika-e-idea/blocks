@@ -57,7 +57,7 @@
           isPause: true,
           stlabel: 'スタート',
           boardStatus: '□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□<br>□□□□□□□□□□',
-          nextBlock: '□□□□□<br>□□□□□<br>□□■□□<br>□■■■□<br>□□□□□',
+          nextBlock: '□□□□□<br>□□■□□<br>□■■■□<br>□□□□□<br>□□□□□',
           valScore: 0,
           countTime: 0,
           strTime: '0:00:00'
@@ -72,8 +72,8 @@
                 if(!data.isPause){
                     data.countTime += 1;
                     ss = data.countTime % 60;
-                    mm = (data.countTime - ss) % 3600;
-                    h = (data.countTime - mm - ss) / 216000;
+                    mm = ((data.countTime - ss) / 60) % 60;
+                    h = (data.countTime - (mm * 60) - ss) / 3600 ;
                     data.strTime = h + ':' + ('0' + mm).slice(-2) + ':' + ('0' + ss).slice(-2);
                 }
             }, 1000);
