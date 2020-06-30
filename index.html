@@ -54,7 +54,7 @@
             [[0,0,0,0,0],[0,0,1,0,0],[0,0,1,1,0],[0,0,0,1,0],[0,0,0,0,0]],
             [[0,0,0,0,0],[0,0,1,0,0],[0,1,1,0,0],[0,1,0,0,0],[0,0,0,0,0]]
           ],
-          coordinate: [0,3],
+          coordinate: [3,3],
           stack: [
               [0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0],
@@ -84,7 +84,7 @@
           ],
           field: [],
         　trgNext: true,
-          next: parseInt(Math.random() * 7) + 1,
+          next: parseInt(Math.random() * 7),
           current: 0,
           isPause: true,
           stlabel: 'スタート',
@@ -100,84 +100,87 @@
         });
         window.onload = onload();
         function onload() {
-            var valInit = [0,3];
-            var num;
+            var valInit = [3,3];
+            var num = 0;
             var flgStep;
             var dig = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j'];
             setInterval(function(){
-                if(!data.isPause){
-                    //Time Count
-                    data.countTime ++;
-                    ss = data.countTime % 60;
-                    mm = ((data.countTime - ss) / 60) % 60;
-                    h = (data.countTime - (mm * 60) - ss) / 3600 ;
-                    data.strTime = h + ':' + ('0' + mm).slice(-2) + ':' + ('0' + ss).slice(-2);
-                    //Next Block
-                    if(data.trgNext){
-                        data.current = data.next;
-                        data.coordinate = valInit;
-                        data.next = parseInt(Math.random() * 7) + 1;
-                        data.nextBlock = '';
-                        for(i = 0; i < 5; i++){
-                            for(j = 0; j < 5; j++){
-                                num = data.blocks[data.next][i][j];
-                                data.nextBlock += '<div class="dspgrid gr-' + i + '' + j + '';
-                                if(num == 0){
-                                    data.nextBlock += '"></div>';
-                                }else{
-                                    data.nextBlock += ' bl-' + data.next + '"></div>';
-                                }
-                            }
-                        }
-                        data.trgNext = false;
+              if(!data.isPause){
+                //Time Count
+                data.countTime ++;
+                ss = data.countTime % 60;
+                mm = ((data.countTime - ss) / 60) % 60;
+                h = (data.countTime - (mm * 60) - ss) / 3600 ;
+                data.strTime = h + ':' + ('0' + mm).slice(-2) + ':' + ('0' + ss).slice(-2);
+                //- Time Count
+                //Next Block
+                if(data.trgNext){
+                  data.current = data.next;
+                  data.coordinate = valInit;
+                  data.next = parseInt(Math.random() * 7);
+                  data.nextBlock = '';
+                  for(i = 0; i < 5; i++){
+                    for(j = 0; j < 5; j++){
+                      num = data.blocks[data.next][i][j];
+                      data.nextBlock += '<div class="dspgrid gr-' + i + '' + j + '';
+                      if(num == 0){
+                        data.nextBlock += '"></div>';
+                      }else{
+                        data.nextBlock += ' bl-' + (data.next + 1) + '"></div>';
+                      }
                     }
-                    //Field & Current Block
-                    if(!data.trgNext){
-                        flgStep = true;
-                        data.field = data.stack;
-                        for(i = 0; i < 5; i++){
-                            if(!flgStep){
-                                break;
-                                data.trgNext = true;
-                            }
-                            for(j = 0; j < 5; j++){
-                                num = data.blocks[data.current][i][j];
-                                if(num > 0){
-                                    if(data.stack[data.coordinate[0] + i + 1][data.coordinate[1] + j] !== 0){
-                                        flgStep = false;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if(flgStep){
-                          data.coordinate[0] ++;
-                        }
-                        for(i = 0; i < 5; i++){
-                            for(j = 0; j < 5; j++){
-                                num = data.blocks[data.current][i][j];
-                                    if(num != 0){
-                                    data.field[data.coordinate[0] + i][data.coordinate[1] +j] = num;
-                                }
-                            }
-                        }
-                        data.fieldBlocks = ''
-                        for(i = 5; i < 25; i++){
-                            for(j = 0; j < 10; j++){
-                                num = data.field[i][j];
-                                if(num == 0){
-                                    data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + '"></div>'
-                                }else{
-                                    data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + ' bl-' + data.current + '"></div>'
-                                }
-                            }
-                        }
-                        if(!flgStep){
-                            data.stack = data.field;
-                        }
-                    }
+                  }
+                  data.trgNext = false;
                 }
-            }, 1000);
+                //- Next Block
+                //Field & Current Block
+                flgStep = true;
+                if(flgStep){
+                  data.coordinate[0] ++;
+                  data.field = [];
+                  data.field = data.stack.slice();
+                  for(i = 0; i < 5; i++){
+                    if(i > 0){
+                      for(j = 0; j < 5; j++){
+                        num = data.blocks[data.current][i][j];
+                        if(num != 0){
+                          data.field[data.coordinate[0] + i - 1][data.coordinate[1] +j] = 0;
+                        }
+                      }
+                    }
+                  }
+                  for(i = 0; i < 5; i++){
+                    for(j = 0; j < 5; j++){
+                      num = data.blocks[data.current][i][j];
+                      if(num != 0){
+                        data.field[data.coordinate[0] + i][data.coordinate[1] +j] = num;
+                      }
+                    }
+                  }
+                  var strTmp = '';
+                  data.fieldBlocks = '';
+                  for(i = 5; i < 25; i++){
+                    if(i > 0){strTmp += '\n';}
+                      for(j = 0; j < 10; j++){
+                        num = data.field[i][j];
+                        strTmp += '' + num; 
+                        if(num == 0){
+                          data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + '"></div>';
+                        }else{
+                          data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + ' bl-' + (data.current + 1) + '"></div>';
+                        }
+                      }
+                    }
+                    console.log(strTmp); 
+                  }else{
+                    data.stack = [];
+                    data.stack = data.field.slice();
+                    trgNext = true;
+                    data.coordinate = valInit.slice();
+                  }
+                  //- Field & Current Block
+                }       
+          }, 3000);
         };
         function doAction() {
           data.isPause = false;
