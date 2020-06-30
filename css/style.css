@@ -41,7 +41,7 @@ html{
 }
 .next,
 .data,
-.board{
+.field{
     box-sizing: border-box;
     border: solid 1px #444;
     margin: 0;
@@ -61,7 +61,7 @@ html{
     grid-row: 3 / 4;
     grid-column: 3 / 4;
 }
-.board{
+.field{
     display: grid;
     grid-template-rows: repeat(20, 19px 1px);
     grid-template-columns: repeat(10, 19px 1px);
@@ -72,7 +72,7 @@ html{
     padding:0.5rem;
 }
 .next p,
-.board p{
+.field p{
     margin: 0;
     padding: 0;
 }
@@ -300,7 +300,7 @@ html{
 .gr-j9{grid-row: 39 / 40; grid-column: 19 / 20;}
 
 .bl-1{
-    background-color: #2277ff;
+    background-color: #77aaff;
 }
 .bl-2{
     background-color: #ffaa00;
