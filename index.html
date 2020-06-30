@@ -136,11 +136,14 @@
                         flgStep = true;
                         data.field = data.stack;
                         for(i = 0; i < 5; i++){
-                            if(!flgStep){break;}
+                            if(!flgStep){
+                                break;
+                                data.trgNext = true;
+                            }
                             for(j = 0; j < 5; j++){
                                 num = data.blocks[data.current][i][j];
                                 if(num > 0){
-                                    if(data.stack[data.coordinate[0] + i + 1][data.coordinate[1] + j] != 0){
+                                    if(data.stack[data.coordinate[0] + i + 1][data.coordinate[1] + j] !== 0){
                                         flgStep = false;
                                         break;
                                     }
@@ -158,10 +161,6 @@
                                 }
                             }
                         }
-                        if(!flgStep){
-                            data.stack = data.field;
-                            data.trgNext = true;
-                        }
                         data.fieldBlocks = ''
                         for(i = 5; i < 25; i++){
                             for(j = 0; j < 10; j++){
@@ -172,6 +171,9 @@
                                     data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + ' bl-' + data.current + '"></div>'
                                 }
                             }
+                        }
+                        if(!flgStep){
+                            data.stack = data.field;
                         }
                     }
                 }
