@@ -111,7 +111,6 @@
         window.onload = fnOnload();
         function fnOnload() {
           var num = 0;
-          var dig = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j'];
           setInterval(function(){
             if(!data.isPause){
               //Time Count
@@ -146,7 +145,6 @@
               if(!data.stack[0]){
                 data.stack = JSON.parse(JSON.stringify(data.initStack));
               }
-              data.field = JSON.parse(JSON.stringify(data.stack));
               if(!data.isControl){
                 ////gadge landing
                 for(i = 0; i < 5; i++){
@@ -173,31 +171,9 @@
                   console.log('drop');
                   console.log(data.coordinate);
                 }
-                for(i = 0; i < 5; i++){
-                  for(j = 0; j < 5; j++){
-                    num = data.blocks[data.current][i][j];
-                    if(num != 0){
-                      data.field[data.coordinate[0] + i][data.coordinate[1] + j] = num;
-                    }
-                  }
-                }
-                ////write field blocks
-                var strTmp = '';
-                data.fieldBlocks = '';
-                for(i = 5; i < 25; i++){
-                  if(i > 0){strTmp += '\n';}
-                    for(j = 0; j < 10; j++){
-                      num = data.field[i][j];
-                      strTmp += '' + num; 
-                      if(num == 0){
-                        data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + '"></div>';
-                      }else{
-                        data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + ' bl-' + (data.field[i][j]) + '"></div>';
-                      }
-                    }
-                  }
-                  console.log(strTmp);
-                  ////jadge game is over
+                ////draw field blocks
+                drawField();
+                  ////jadge erase line and game is over
                 if(data.isLanding){
                   var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
                     return accumulator + currentValue;
@@ -208,6 +184,7 @@
                     console.log('GAME is OVER');
                   }else{
                     data.stack = JSON.parse(JSON.stringify(data.field));
+                    eraseLine();
                     data.isLanding = false;
                     data.trgNext = true;
                   }
@@ -215,7 +192,7 @@
               }
               //- Field & Current Block
             }
-          }, 3000);
+          }, 1000);
         };
         function doAction() {
           data.isPause = false;
@@ -239,15 +216,74 @@
           data.current = 0;
           console.log('restart');
         };
+        function drawField(){
+          var dig = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j'];
+          data.field = JSON.parse(JSON.stringify(data.stack));
+          for(m = 0; m < 5; m++){
+            for(n = 0; n < 5; n++){
+              num = data.blocks[data.current][m][n];
+              if(num != 0 && (data.coordinate[0] + m) < 25 && data.coordinate[1] + n >= 0 && data.coordinate[1] + n < 10){
+                data.field[data.coordinate[0] + m][data.coordinate[1] + n] = num;
+              }
+            }
+          }
+          var strTmp = '';
+          data.fieldBlocks = '';
+          for(m = 5; m < 25; m++){
+            if(m > 0){strTmp += '\n';}
+            for(n = 0; n < 10; n++){
+              num = data.field[m][n];
+              strTmp += '' + num; 
+              if(num == 0){
+                data.fieldBlocks += '<div class="dspgrid gr-' + dig[m - 5] + dig[n] + '"></div>';
+              }else{
+                data.fieldBlocks += '<div class="dspgrid gr-' + dig[m - 5] + dig[n] + ' bl-' + (data.field[m][n]) + '"></div>';
+              }
+            }
+          }
+          console.log(strTmp);
+        };
+        function eraseLine(){
+          var eraseList = [];
+          var strCK = '';
+          for(i = 24; i >= 0; i--){
+            if(Math.min.apply(null, data.stack[i]) > 0){
+              eraseList[i] = 1;
+              //strCK += '1';
+            }else{
+              eraseList[i] = 0;
+              //strCK += '0';
+            }
+              strCK += ' ' + Math.min.apply(null, data.stack[i]);
+          }
+          console.log(strCK);
+          k = 0;
+          for(i = 24; i >= 0; i--){
+            if(eraseList[i] == 1){
+              for(j = 0; j < 5; j++){
+                if(eraseList[i - j] == 1){
+                  k++;
+                }
+              }
+            }
+            if(k > i){
+              data.stack[i] = [0,0,0,0,0,0,0,0,0,0];
+              console.log('fill space');
+            }else{
+              data.stack[i] = JSON.parse(JSON.stringify(data.stack[i - k]));
+              console.log('erase line');
+            }
+          }
+        };
         function doMoveL() {
           data.isControl = true;
           for(k = 0; k < 5; k++){
             if(!data.isMovable){break;}
-            for(l = 0; k < 5; l++){
+            for(l = 0; l < 5; l++){
               num = data.blocks[data.current][k][l];
                 if(num != 0){
-                  if(data.coordinate[1] + i > 0){
-                    if(data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)] != 0){
+                  if(data.coordinate[1] + l > 0){
+                    if(data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)] !== 0){
                       data.isMovable = false;
                       console.log('bump!' + (data.coordinate[0] + k) + ':' + (data.coordinate[1] + l - 1) + ' is ' + data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)]);
                       break;
@@ -260,11 +296,40 @@
                 }
             }
           }
-          console.log('Click Left');
+          if(data.isMovable){
+            data.coordinate[1] --;
+            drawField();
+            console.log('Move Left');
+          }
+          data.isMovable = true;
           data.isControl = false;
         };
-        function doMoveR() {
-          data.isControl = true;
+        function doMoveR() {data.isControl = true;
+          for(k = 0; k < 5; k++){
+            if(!data.isMovable){break;}
+            for(l = 0; l < 5; l++){
+              num = data.blocks[data.current][k][l];
+                if(num != 0){
+                  if(data.coordinate[1] + l < 9){
+                    if(data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l + 1)] !== 0){
+                      data.isMovable = false;
+                      console.log('bump!' + (data.coordinate[0] + k) + ':' + (data.coordinate[1] + l + 1) + ' is ' + data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l + 1)]);
+                      break;
+                    }
+                  }else{
+                    data.isMovable = false;
+                    console.log('Right Limit!');
+                    break;
+                  }
+                }
+            }
+          }
+          if(data.isMovable){
+            data.coordinate[1] ++;
+            drawField();
+            console.log('Move Left');
+          }
+          data.isMovable = true;
           data.isControl = false;
         };
         function doRotateL() {
