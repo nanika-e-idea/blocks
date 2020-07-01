@@ -33,8 +33,8 @@
       </section>
       <section class="control">
         <div class="control-part cursor">
-          <button class="cursorL"><i class="fas fa-angle-left"></i></button>
-          <button class="cursorR"><i class="fas fa-angle-right"></i></button>
+          <button class="cursorL" onClick="doMoveL();"><i class="fas fa-angle-left"></i></button>
+          <button class="cursorR" onClick="doMoveR();"><i class="fas fa-angle-right"></i></button>
         </div>
         <div class="control-part hoge">
           <button class="btnPause" onClick="doPause();">Pause</button>
@@ -101,6 +101,8 @@
           strTime: '0:00:00',
           isLanding: false,
           isContinue: true,
+          isControl: false,
+          isMovable: true,
         };
         var app = new Vue({
           el: '#app',
@@ -145,73 +147,75 @@
                 data.stack = JSON.parse(JSON.stringify(data.initStack));
               }
               data.field = JSON.parse(JSON.stringify(data.stack));
-              ////gadge landing
-              for(i = 0; i < 5; i++){
-                if(data.isLanding){break;}
+              if(!data.isControl){
+                ////gadge landing
+                for(i = 0; i < 5; i++){
+                  if(data.isLanding){break;}
+                    for(j = 0; j < 5; j++){
+                      num = data.blocks[data.current][i][j];
+                      if(num != 0){
+                        if(data.coordinate[0] + i < 24){
+                          if(data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)] != 0){
+                            data.isLanding = true;
+                            console.log('bump!' + (data.coordinate[0] + i + 1) + ':' + (data.coordinate[1] + j) + ' is ' + data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)]);
+                            break;
+                          }
+                        }else{
+                          data.isLanding = true;
+                          console.log('Max depth!');
+                          break;
+                        }
+                      }
+                    }
+                }
+                if(!data.isLanding){
+                  data.coordinate[0] ++;
+                  console.log('drop');
+                  console.log(data.coordinate);
+                }
+                for(i = 0; i < 5; i++){
                   for(j = 0; j < 5; j++){
                     num = data.blocks[data.current][i][j];
                     if(num != 0){
-                      if(data.coordinate[0] + i < 24){
-                        if(data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)] != 0){
-                          data.isLanding = true;
-                          console.log('bump!' + (data.coordinate[0] + i + 1) + ':' + (data.coordinate[1] + j) + ' is ' + data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)]);
-                          break;
-                        }
+                      data.field[data.coordinate[0] + i][data.coordinate[1] + j] = num;
+                    }
+                  }
+                }
+                ////write field blocks
+                var strTmp = '';
+                data.fieldBlocks = '';
+                for(i = 5; i < 25; i++){
+                  if(i > 0){strTmp += '\n';}
+                    for(j = 0; j < 10; j++){
+                      num = data.field[i][j];
+                      strTmp += '' + num; 
+                      if(num == 0){
+                        data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + '"></div>';
                       }else{
-                        data.isLanding = true;
-                        console.log('Max depth!');
-                        break;
+                        data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + ' bl-' + (data.field[i][j]) + '"></div>';
                       }
                     }
                   }
-              }
-              if(!data.isLanding){
-                data.coordinate[0] ++;
-                console.log('drop');
-                console.log(data.coordinate);
-              }
-              for(i = 0; i < 5; i++){
-                for(j = 0; j < 5; j++){
-                  num = data.blocks[data.current][i][j];
-                  if(num != 0){
-                    data.field[data.coordinate[0] + i][data.coordinate[1] + j] = num;
+                  console.log(strTmp);
+                  ////jadge game is over
+                if(data.isLanding){
+                  var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
+                    return accumulator + currentValue;
+                  });
+                  if(valTmp > 0){
+                    data.isPause = true;
+                    data.isContinue = false;
+                    console.log('GAME is OVER');
+                  }else{
+                    data.stack = JSON.parse(JSON.stringify(data.field));
+                    data.isLanding = false;
+                    data.trgNext = true;
                   }
-                }
-              }
-              ////write field blocks
-              var strTmp = '';
-              data.fieldBlocks = '';
-              for(i = 5; i < 25; i++){
-                if(i > 0){strTmp += '\n';}
-                  for(j = 0; j < 10; j++){
-                    num = data.field[i][j];
-                    strTmp += '' + num; 
-                    if(num == 0){
-                      data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + '"></div>';
-                    }else{
-                      data.fieldBlocks += '<div class="dspgrid gr-' + dig[i - 5] + dig[j] + ' bl-' + (data.field[i][j]) + '"></div>';
-                    }
-                  }
-                }
-                console.log(strTmp);
-                ////jadge game is over
-              if(data.isLanding){
-                var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
-                  return accumulator + currentValue;
-                });
-                if(valTmp > 0){
-                  data.isPause = true;
-                  data.isContinue = false;
-                  console.log('GAME is OVER');
-                }else{
-                  data.stack = JSON.parse(JSON.stringify(data.field));
-                  data.isLanding = false;
-                  data.trgNext = true;
                 }
               }
               //- Field & Current Block
             }
-          }, 1000);
+          }, 3000);
         };
         function doAction() {
           data.isPause = false;
@@ -234,6 +238,42 @@
           data.next = parseInt(Math.random() * 7);
           data.current = 0;
           console.log('restart');
+        };
+        function doMoveL() {
+          data.isControl = true;
+          for(k = 0; k < 5; k++){
+            if(!data.isMovable){break;}
+            for(l = 0; k < 5; l++){
+              num = data.blocks[data.current][k][l];
+                if(num != 0){
+                  if(data.coordinate[1] + i > 0){
+                    if(data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)] != 0){
+                      data.isMovable = false;
+                      console.log('bump!' + (data.coordinate[0] + k) + ':' + (data.coordinate[1] + l - 1) + ' is ' + data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)]);
+                      break;
+                    }
+                  }else{
+                    data.isMovable = false;
+                    console.log('Left Limit!');
+                    break;
+                  }
+                }
+            }
+          }
+          console.log('Click Left');
+          data.isControl = false;
+        };
+        function doMoveR() {
+          data.isControl = true;
+          data.isControl = false;
+        };
+        function doRotateL() {
+          data.isControl = true;
+          data.isControl = false;
+        };
+        function doRotateR() {
+          data.isControl = true;
+          data.isControl = false;
         };
     </script>
 </body>
