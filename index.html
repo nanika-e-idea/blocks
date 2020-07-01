@@ -10,7 +10,8 @@
 <body>
     <div id="app">
       <div class="pause" v-if="isPause">
-        <button onClick="doAction();">{{stlabel}}</button>
+        <button v-if="isContinue" onClick="doAction();">{{stlabel}}</button>
+        <button v-else onClick="doRestart();">もう一度</button>
       </div>
       <section class="view">
         <div class="wrapper">
@@ -54,8 +55,9 @@
             [[0,0,0,0,0],[0,0,6,0,0],[0,0,6,6,0],[0,0,0,6,0],[0,0,0,0,0]],
             [[0,0,0,0,0],[0,0,7,0,0],[0,7,7,0,0],[0,7,0,0,0],[0,0,0,0,0]]
           ],
+          initCoord : [0,3],
           coordinate: [0,3],
-          stack: [
+          initStack: [
               [0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0],
@@ -82,8 +84,9 @@
               [0,0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0,0]
           ],
+          stack:[],
           field: [],
-        　trgNext: true,
+          trgNext: true,
           next: parseInt(Math.random() * 7),
           current: 0,
           isPause: true,
@@ -93,7 +96,8 @@
           valScore: 0,
           countTime: 0,
           strTime: '0:00:00',
-          isLanding: false
+          isLanding: false,
+          isContinue: true,
         };
         var app = new Vue({
           el: '#app',
@@ -101,7 +105,6 @@
         });
         window.onload = fnOnload();
         function fnOnload() {
-          var valInit = [0,3];
           var num = 0;
           var dig = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j'];
           setInterval(function(){
@@ -116,7 +119,7 @@
               //Next Block
               if(data.trgNext){
                 data.current = data.next;
-                data.coordinate = JSON.parse(JSON.stringify(valInit));
+                data.coordinate = JSON.parse(JSON.stringify(data.initCoord));
                 data.next = parseInt(Math.random() * 7);
                 data.nextBlock = '';
                 for(i = 0; i < 5; i++){
@@ -135,6 +138,9 @@
               //- Next Block
               //Field & Current Block
               //field initialize
+              if(!data.stack[0]){
+                data.stack = JSON.parse(JSON.stringify(data.initStack));
+              }
               data.field = JSON.parse(JSON.stringify(data.stack));
               //gadge landing
               for(i = 0; i < 5; i++){
@@ -186,23 +192,42 @@
                 }
                 console.log(strTmp); 
               if(data.isLanding){
-                data.stack = JSON.parse(JSON.stringify(data.field));
-                data.coordinate = JSON.parse(JSON.stringify(valInit));
-                data.isLanding = false;
-                data.trgNext = true;
+                var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
+                  return accumulator + currentValue;
+                });
+                if(valTmp > 0){
+                  data.isPause = true;
+                  data.isContinue = false;
+                  console.log('GAME is OVER');
+                }else{
+                  data.stack = JSON.parse(JSON.stringify(data.field));
+                  //data.coordinate = JSON.parse(JSON.stringify(data.initCoord));
+                  data.isLanding = false;
+                  data.trgNext = true;
+                }
               }
               //- Field & Current Block
+              //jadge game over
+              
+              //- jadge game over
             }
           }, 1000);
         };
         function doAction() {
           data.isPause = false;
           data.stlabel = '再開';
-          console.log('start');
+          console.log('continue');
         };
         function doPause() {
           data.isPause = true;
           console.log('pause');
+        };
+        function doRestart() {
+          data.stack = [];
+          data.isLanding = false;
+          data.isContinue = true;
+          data.isPause = false;
+          console.log('restart');
         };
     </script>
 </body>
