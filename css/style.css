@@ -15,6 +15,10 @@ html{
     text-align: center;
     z-index: 10;
 }
+.pause p,
+.pause h1{
+    color: white;
+}
 .pause button{
     width: 350px;
     max-width: 98%;
