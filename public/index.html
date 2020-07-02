@@ -36,8 +36,8 @@
       <section class="control">
         <div class="control-part cursor">
           <button class="cursorL" onClick="doMoveL();"><i class="fas fa-angle-left"></i></button>
-          <button class="cursorR" onClick="doMoveR();"><i class="fas fa-angle-right"></i></button>
           <button class="cursorD" onclick="doMoveD();"><i class="fas fa-angle-down"></i></button>
+          <button class="cursorR" onClick="doMoveR();"><i class="fas fa-angle-right"></i></button>
         </div>
         <div class="control-part hoge">
           <button class="btnPause" onClick="doPause();"><i class="fa fa-pause"></i></button>
@@ -157,56 +157,11 @@
                 data.trgNext = false;
               }
               //- Next Block
+
               //Field & Current Block
-              if(!data.stack[0]){
-                data.stack = JSON.parse(JSON.stringify(data.initStack));
-              }
-              if(!data.isControl){
-                data.isLanding = false;
-                for(i = 0; i < 5; i++){
-                  if(data.isLanding){break;}
-                    for(j = 0; j < 5; j++){
-                      num = data.objBlock[i][j];
-                      if(num != 0){
-                        if(data.coordinate[0] + i < 24){
-                          if(data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)] != 0){
-                            data.isLanding = true;
-                            console.log('bump!' + (data.coordinate[0] + i + 1) + ':' + (data.coordinate[1] + j) + ' is ' + data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)]);
-                            break;
-                          }
-                        }else{
-                          data.isLanding = true;
-                          console.log('Max depth!');
-                          break;
-                        }
-                      }
-                    }
-                }
-                if(!data.isLanding){
-                  data.coordinate[0] ++;
-                  console.log('drop');
-                  console.log(data.coordinate);
-                }
-                ////draw field blocks
-                drawField();
-                  ////jadge erase line and game is over
-                if(data.isLanding){
-                  var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
-                    return accumulator + currentValue;
-                  });
-                  if(valTmp > 0){
-                    data.isPause = true;
-                    data.isContinue = false;
-                    console.log('GAME is OVER');
-                  }else{
-                    data.stack = JSON.parse(JSON.stringify(data.field));
-                    data.objBlock = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
-                    data.trgNext = true;
-                    eraseLine();
-                  }
-                }
-              }
+              doMoveD();
               //- Field & Current Block
+              
             }
           }, 1000);
         };
@@ -349,6 +304,55 @@
 
         function doMoveD(){
           data.isControl = true;
+
+          if(!data.stack[0]){
+                data.stack = JSON.parse(JSON.stringify(data.initStack));
+              }
+              if(!data.isControl){
+                data.isLanding = false;
+                for(i = 0; i < 5; i++){
+                  if(data.isLanding){break;}
+                    for(j = 0; j < 5; j++){
+                      num = data.objBlock[i][j];
+                      if(num != 0){
+                        if(data.coordinate[0] + i < 24){
+                          if(data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)] != 0){
+                            data.isLanding = true;
+                            console.log('bump!' + (data.coordinate[0] + i + 1) + ':' + (data.coordinate[1] + j) + ' is ' + data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)]);
+                            break;
+                          }
+                        }else{
+                          data.isLanding = true;
+                          console.log('Max depth!');
+                          break;
+                        }
+                      }
+                    }
+                }
+                if(!data.isLanding){
+                  data.coordinate[0] ++;
+                  console.log('drop');
+                  console.log(data.coordinate);
+                }
+                ////draw field blocks
+                drawField();
+                  ////jadge erase line and game is over
+                if(data.isLanding){
+                  var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
+                    return accumulator + currentValue;
+                  });
+                  if(valTmp > 0){
+                    data.isPause = true;
+                    data.isContinue = false;
+                    console.log('GAME is OVER');
+                  }else{
+                    data.stack = JSON.parse(JSON.stringify(data.field));
+                    data.objBlock = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
+                    data.trgNext = true;
+                    eraseLine();
+                  }
+                }
+              }
 
           data.isControl = false;
         };
