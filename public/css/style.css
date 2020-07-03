@@ -38,8 +38,8 @@ html{
 }
 .wrapper{
     display: grid;
-    grid-template-rows: 6rem 0.5rem 14.5rem;
-    grid-template-columns: 11rem 1fr 6rem;
+    grid-template-rows: 120px 1fr 290px;
+    grid-template-columns: 220px 1fr 120px;
     max-width: 350px;
     margin: auto;
 }
@@ -53,6 +53,8 @@ html{
 }
 .next{
     display: grid;
+    width: 120px;
+    height: 120px;
     grid-template-rows: repeat(5, 19px 1px);
     grid-template-columns: repeat(5, 19px 1px);
     grid-row: 1 / 2;
@@ -67,6 +69,8 @@ html{
 }
 .field{
     display: grid;
+    width: 220px;
+    height: 420px;
     grid-template-rows: repeat(20, 19px 1px);
     grid-template-columns: repeat(10, 19px 1px);
     grid-row: 1 / 4;
