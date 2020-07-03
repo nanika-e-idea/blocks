@@ -159,7 +159,12 @@
               //- Next Block
 
               //Field & Current Block
-              doMoveD();
+              if(!data.stack[0]){
+                data.stack = JSON.parse(JSON.stringify(data.initStack));
+              }
+              if(!data.isControl){
+              　　doMoveD();
+              }
               //- Field & Current Block
               
             }
@@ -302,13 +307,10 @@
           data.isControl = false;
         };
 
-        function doMoveD(){
+        function doMoveD()　{
           data.isControl = true;
 
-          if(!data.stack[0]){
-                data.stack = JSON.parse(JSON.stringify(data.initStack));
-              }
-              if(!data.isControl){
+            
                 data.isLanding = false;
                 for(i = 0; i < 5; i++){
                   if(data.isLanding){break;}
@@ -352,7 +354,7 @@
                     eraseLine();
                   }
                 }
-              }
+              
 
           data.isControl = false;
         };
