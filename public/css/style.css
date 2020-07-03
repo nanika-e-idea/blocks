@@ -376,18 +376,16 @@ html{
   .control{
       height: 120px;
   }
-  .control-part{
-      width: 250px;
-  }
-  .cursorR,.cursorL,.rotateR,.rotateL{
+  .cursorR,.cursorL,.cursorD,
+  .rotateR,.rotateL,.btnPause{
       width: 100px;
       height: 100px;
       margin: 10px;
   } 
-  .cursorR,.cursorL{
+  .cursorR,.cursorL,.cursorD{
       font-size: 100px;
   }
-  .rotateR,.rotateL{
+  .rotateR,.rotateL,.btnPause{
       font-size: 70px;
   }
 }
