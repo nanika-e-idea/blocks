@@ -1,5 +1,5 @@
 html{
-    font-size: 20px;
+    font-size: 16px;
 }
 .pause{
     position: absolute;
@@ -341,8 +341,7 @@ html{
 .control-part{
     display: flex;
     justify-content: space-around;
-    width: auto;
-    max-width: 33%; 
+    width: auto; 
 }
 .control-spacer{
     width: 100%;
