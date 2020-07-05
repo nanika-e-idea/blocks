@@ -41,7 +41,7 @@
       <div class="control-part cursor">
         <button class="cursorL" onClick="doMoveL();"><i class="fas fa-angle-left"></i></button>
         <button class="cursorD" onclick="doMoveD();"><i class="fas fa-angle-down"></i></button>
-        <button class="cursorR" onClick="doMoveR();"><i class="fas fa-angle-right"></i></button>
+        <button class="cursorR" v-on:mousedown="doRepeat(doMoveR())" v-on:mouseup="endRepeat();"><i class="fas fa-angle-right"></i></button>
       </div>
       <div class="control-part hoge">
         <button class="btnPause" onClick="doPause();"><i class="fa fa-pause"></i></button>
@@ -168,13 +168,59 @@
       valCicle: 0,
       gameLevel: 1,
       valDrop: 0,
+      isRpeat: false
     };
     var app = new Vue({
       el: '#app',
       data: data,
+      methods: {
+        doRepeat(fnc){
+          data.isRepeat = true;
+          this.repeat = setInterval(function() {
+            fnc;
+          }, 500);
+        },
+        endRepeat(){
+          this.repeat = clearInterval();
+          data.isRepeat = false;
+        },
+        doMoveR() {
+            data.isControl = true;
+            for (k = 0; k < 5; k++) {
+              if (!data.isMovable) {
+              break;
+            }
+            for (l = 0; l < 5; l++) {
+              num = data.objBlock[k][l];
+              if (num != 0) {
+                if (data.coordinate[1] + l < 9) {
+                  if (data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l + 1)] !== 0) {
+                    data.isMovable = false;
+                    console.log('bump!' + (data.coordinate[0] + k) + ':' + (data.coordinate[1] + l + 1) + ' is ' + data
+                    .stack[(data.coordinate[0] + k)][(data.coordinate[1] + l + 1)]);
+                    break;
+                  }
+                } else {
+                  data.isMovable = false;
+                  console.log('Right Limit!');
+                  break;
+                }
+              }
+            }
+          }
+          if (data.isMovable) {
+            data.coordinate[1]++;
+            drawField();
+            console.log('Move Left');
+          }
+          data.isMovable = true;
+          data.isControl = false;
+        },      
+      }, 
     });
     window.onload = fnOnload();
-
+    var repeat;
+    
     function fnOnload() {
       var num = 0;
       data.stack = JSON.parse(JSON.stringify(data.initStack));
