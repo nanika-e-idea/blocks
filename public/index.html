@@ -39,9 +39,9 @@
     </section>
     <section class="control">
       <div class="control-part cursor">
-        <button class="cursorL" v-on:mousedown="doRepeat(doMoveL)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-left"></i></button>
-        <button class="cursorD" v-on:mousedown="doRepeat(doMoveD)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-down"></i></button>
-        <button class="cursorR" v-on:mousedown="doRepeat(doMoveR)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-right"></i></button>
+        <button class="cursorL" v-on:click="doMoveL" v-on:mousedown="doRepeat(doMoveL)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-left"></i></button>
+        <button class="cursorD" v-on:click="doMoveD" v-on:mousedown="doRepeat(doMoveD)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-down"></i></button>
+        <button class="cursorR" v-on:click="doMoveR" v-on:mousedown="doRepeat(doMoveR)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-right"></i></button>
       </div>
       <div class="control-part hoge">
         <button class="btnPause" onClick="doPause();"><i class="fa fa-pause"></i></button>
@@ -175,15 +175,15 @@
         doRepeat(fnc){
           isRepeat = true;
           action = setInterval(function(){
-            isRepeat = true;
+            if(!isRepeat){
+              clearInterval(action);
+            }
             fnc();
-            console.log(isRepeat);
           }, 300);
         },
         endRepeat(){
           isRepeat = false;
           clearInterval(action);
-          console.log(isRepeat);
         },
         doMoveR() {
             data.isControl = true;
