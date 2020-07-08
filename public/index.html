@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue-longpress@1.0.2/dist/vue-longpress.min.js"></script>
 </head>
 
-<body>
+<body oncontextmenu='return false;'>
   <div id="app">
     <div class="pause" v-if="isPause">
       <button v-if="isContinue" onClick="doAction();">{{stlabel}}</button>
@@ -39,9 +39,9 @@
     </section>
     <section class="control">
       <div class="control-part cursor">
-        <button class="cursorL" onClick="doMoveL();"><i class="fas fa-angle-left"></i></button>
-        <button class="cursorD" onclick="doMoveD();"><i class="fas fa-angle-down"></i></button>
-        <button class="cursorR" v-on:mousedown="doRepeat(doMoveR())" v-on:mouseup="endRepeat();"><i class="fas fa-angle-right"></i></button>
+        <button class="cursorL" v-on:mousedown="doRepeat(doMoveL)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-left"></i></button>
+        <button class="cursorD" v-on:mousedown="doRepeat(doMoveD)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-down"></i></button>
+        <button class="cursorR" v-on:mousedown="doRepeat(doMoveR)" v-on:mouseup="endRepeat();"><i class="fas fa-angle-right"></i></button>
       </div>
       <div class="control-part hoge">
         <button class="btnPause" onClick="doPause();"><i class="fa fa-pause"></i></button>
@@ -168,21 +168,22 @@
       valCicle: 0,
       gameLevel: 1,
       valDrop: 0,
-      isRpeat: false
+      isRepeat: false,
+      action: '',
     };
-    var app = new Vue({
-      el: '#app',
-      data: data,
-      methods: {
+    var methods = {
         doRepeat(fnc){
-          data.isRepeat = true;
-          this.repeat = setInterval(function() {
-            fnc;
-          }, 500);
+          isRepeat = true;
+          action = setInterval(function(){
+            isRepeat = true;
+            fnc();
+            console.log(isRepeat);
+          }, 300);
         },
         endRepeat(){
-          this.repeat = clearInterval();
-          data.isRepeat = false;
+          isRepeat = false;
+          clearInterval(action);
+          console.log(isRepeat);
         },
         doMoveR() {
             data.isControl = true;
@@ -215,12 +216,110 @@
           }
           data.isMovable = true;
           data.isControl = false;
-        },      
-      }, 
-    });
-    window.onload = fnOnload();
-    var repeat;
+        }, 
+        doMoveL() {
+          data.isControl = true;
+          for (k = 0; k < 5; k++) {
+            if (!data.isMovable) {
+              console.log('immovable!!')
+              break;
+            }
+            for (l = 0; l < 5; l++) {
+              num = data.objBlock[k][l];
+              if (num != 0) {
+                if (data.coordinate[1] + l > 0) {
+                  if (data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)] !== 0) {
+                    data.isMovable = false;
+                    console.log('bump!' + (data.coordinate[0] + k) + ':' + (data.coordinate[1] + l - 1) + ' is ' + data
+                      .stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)]);
+                    break;
+                  }
+                } else {
+                  data.isMovable = false;
+                  console.log('Left Limit!');
+                  break;
+                }
+              }
+            }
+          }
+          if (data.isMovable) {
+            data.coordinate[1]--;
+            drawField();
+            console.log('Move Left');
+          }
+          data.isMovable = true;
+          data.isControl = false;
+        },
+
+        doMoveD() {
+          data.isControl = true;
+          data.isLanding = false;
     
+          for (i = 0; i < 5; i++) {
+            if (data.isLanding) {
+              break;
+            }
+            for (j = 0; j < 5; j++) {
+              num = data.objBlock[i][j];
+              if (num != 0) {
+                if (data.coordinate[0] + i < 24) {
+                  if (data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)] != 0) {
+                    data.isLanding = true;
+                    console.log('bump!' + (data.coordinate[0] + i + 1) + ':' + (data.coordinate[1] + j) + ' is ' + data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)]);
+                    break;
+                  }
+                } else {
+                  data.isLanding = true;
+                  console.log('Max depth!');
+                  break;
+                }
+              }
+            }
+          }
+          if (!data.isLanding) {
+            data.coordinate[0]++;
+            console.log('drop ' + data.valCicle);
+          }
+          ////draw field blocks
+          drawField();
+          ////jadge erase line and game is over
+          if (data.isLanding) {
+            var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
+              return accumulator + currentValue;
+            });
+            if (valTmp > 0) {
+              data.isPause = true;
+              data.isContinue = false;
+              console.log('GAME is OVER');
+            } else {
+              data.stack = JSON.parse(JSON.stringify(data.field));
+              console.log('landing!');
+              console.log(data.stack);
+              data.objBlock = [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+              ];
+              data.trgNext = true;
+              eraseLine();
+            }
+          }
+          data.isControl = false;
+        },
+    }; 
+    var app = new Vue({
+      el: '#app',
+      data: data,
+      methods: methods, 
+    });
+    window.oncontextmenu = function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+    };
+    window.onload = fnOnload();
     function fnOnload() {
       var num = 0;
       data.stack = JSON.parse(JSON.stringify(data.initStack));
@@ -263,7 +362,7 @@
           if(data.valDrop == 10 - data.gameLevel){
             
             if (!data.isControl) {
-              doMoveD();
+              methods.doMoveD();
             }
             data.valDrop = 0;
           }else{
@@ -364,129 +463,7 @@
       data.isControl = false;
     };
 
-    function doMoveL() {
-      data.isControl = true;
-      for (k = 0; k < 5; k++) {
-        if (!data.isMovable) {
-          break;
-        }
-        for (l = 0; l < 5; l++) {
-          num = data.objBlock[k][l];
-          if (num != 0) {
-            if (data.coordinate[1] + l > 0) {
-              if (data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)] !== 0) {
-                data.isMovable = false;
-                console.log('bump!' + (data.coordinate[0] + k) + ':' + (data.coordinate[1] + l - 1) + ' is ' + data
-                  .stack[(data.coordinate[0] + k)][(data.coordinate[1] + l - 1)]);
-                break;
-              }
-            } else {
-              data.isMovable = false;
-              console.log('Left Limit!');
-              break;
-            }
-          }
-        }
-      }
-      if (data.isMovable) {
-        data.coordinate[1]--;
-        drawField();
-        console.log('Move Left');
-      }
-      data.isMovable = true;
-      data.isControl = false;
-    };
 
-    function doMoveR() {
-      data.isControl = true;
-      for (k = 0; k < 5; k++) {
-        if (!data.isMovable) {
-          break;
-        }
-        for (l = 0; l < 5; l++) {
-          num = data.objBlock[k][l];
-          if (num != 0) {
-            if (data.coordinate[1] + l < 9) {
-              if (data.stack[(data.coordinate[0] + k)][(data.coordinate[1] + l + 1)] !== 0) {
-                data.isMovable = false;
-                console.log('bump!' + (data.coordinate[0] + k) + ':' + (data.coordinate[1] + l + 1) + ' is ' + data
-                  .stack[(data.coordinate[0] + k)][(data.coordinate[1] + l + 1)]);
-                break;
-              }
-            } else {
-              data.isMovable = false;
-              console.log('Right Limit!');
-              break;
-            }
-          }
-        }
-      }
-      if (data.isMovable) {
-        data.coordinate[1]++;
-        drawField();
-        console.log('Move Left');
-      }
-      data.isMovable = true;
-      data.isControl = false;
-    };
-
-    function doMoveD() {
-      data.isControl = true;
-      data.isLanding = false;
-
-      for (i = 0; i < 5; i++) {
-        if (data.isLanding) {
-          break;
-        }
-        for (j = 0; j < 5; j++) {
-          num = data.objBlock[i][j];
-          if (num != 0) {
-            if (data.coordinate[0] + i < 24) {
-              if (data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)] != 0) {
-                data.isLanding = true;
-                console.log('bump!' + (data.coordinate[0] + i + 1) + ':' + (data.coordinate[1] + j) + ' is ' + data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)]);
-                break;
-              }
-            } else {
-              data.isLanding = true;
-              console.log('Max depth!');
-              break;
-            }
-          }
-        }
-      }
-      if (!data.isLanding) {
-        data.coordinate[0]++;
-        console.log('drop ' + data.valCicle);
-      }
-      ////draw field blocks
-      drawField();
-      ////jadge erase line and game is over
-      if (data.isLanding) {
-        var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
-          return accumulator + currentValue;
-        });
-        if (valTmp > 0) {
-          data.isPause = true;
-          data.isContinue = false;
-          console.log('GAME is OVER');
-        } else {
-          data.stack = JSON.parse(JSON.stringify(data.field));
-          console.log('landing!');
-          console.log(data.stack);
-          data.objBlock = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0]
-          ];
-          data.trgNext = true;
-          eraseLine();
-        }
-      }
-      data.isControl = false;
-    };
 
     function doRotateL() {
       data.isControl = true;
