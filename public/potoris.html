@@ -267,11 +267,15 @@
                 if (data.coordinate[0] + i < 24) {
                   if (data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)] != 0) {
                     data.isLanding = true;
+                    isRepeat = false;
+                    clearInterval(action);
                     console.log('bump!' + (data.coordinate[0] + i + 1) + ':' + (data.coordinate[1] + j) + ' is ' + data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)]);
                     break;
                   }
                 } else {
                   data.isLanding = true;
+                  isRepeat = false;
+                  clearInterval(action);
                   console.log('Max depth!');
                   break;
                 }
