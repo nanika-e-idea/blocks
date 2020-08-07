@@ -34,6 +34,8 @@
           <hr>
           <h1>TIME</h1>
           <p>{{strTime}}</p>
+          <hr>
+          <h1>Lv. {{gameLevel}}</h1>
         </div>
       </div>
     </section>
@@ -189,6 +191,7 @@
             data.isControl = true;
             for (k = 0; k < 5; k++) {
               if (!data.isMovable) {
+              isRepeat = false;
               break;
             }
             for (l = 0; l < 5; l++) {
@@ -203,6 +206,7 @@
                   }
                 } else {
                   data.isMovable = false;
+                  isRepeat = false;
                   console.log('Right Limit!');
                   break;
                 }
@@ -221,7 +225,8 @@
           data.isControl = true;
           for (k = 0; k < 5; k++) {
             if (!data.isMovable) {
-              console.log('immovable!!')
+              console.log('immovable!!');
+              isRepeat = false;
               break;
             }
             for (l = 0; l < 5; l++) {
@@ -236,6 +241,7 @@
                   }
                 } else {
                   data.isMovable = false;
+                  isRepeat = false;
                   console.log('Left Limit!');
                   break;
                 }
@@ -257,6 +263,7 @@
     
           for (i = 0; i < 5; i++) {
             if (data.isLanding) {
+              isRepeat = false;
               break;
             }
             for (j = 0; j < 5; j++) {
@@ -265,11 +272,14 @@
                 if (data.coordinate[0] + i < 24) {
                   if (data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)] != 0) {
                     data.isLanding = true;
+                    isRepeat = false;
+                    clearInterval(action);
                     console.log('bump!' + (data.coordinate[0] + i + 1) + ':' + (data.coordinate[1] + j) + ' is ' + data.stack[(data.coordinate[0] + i + 1)][(data.coordinate[1] + j)]);
                     break;
                   }
                 } else {
                   data.isLanding = true;
+                  isRepeat = false;
                   console.log('Max depth!');
                   break;
                 }
@@ -284,6 +294,7 @@
           drawField();
           ////jadge erase line and game is over
           if (data.isLanding) {
+            isRepeat = false;
             var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
               return accumulator + currentValue;
             });
@@ -391,8 +402,8 @@
     };
 
     function doRestart() {
-      data.stack = [];
-      data.field = [];
+      data.stack = JSON.parse(JSON.stringify(data.initStack));
+      data.field = JSON.parse(JSON.stringify(data.initStack));
       data.valScore = 0;
       data.countTime = 0;
       data.isLanding = false;

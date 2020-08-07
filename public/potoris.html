@@ -191,6 +191,7 @@
             data.isControl = true;
             for (k = 0; k < 5; k++) {
               if (!data.isMovable) {
+              isRepeat = false;
               break;
             }
             for (l = 0; l < 5; l++) {
@@ -205,6 +206,7 @@
                   }
                 } else {
                   data.isMovable = false;
+                  isRepeat = false;
                   console.log('Right Limit!');
                   break;
                 }
@@ -223,7 +225,8 @@
           data.isControl = true;
           for (k = 0; k < 5; k++) {
             if (!data.isMovable) {
-              console.log('immovable!!')
+              console.log('immovable!!');
+              isRepeat = false;
               break;
             }
             for (l = 0; l < 5; l++) {
@@ -238,6 +241,7 @@
                   }
                 } else {
                   data.isMovable = false;
+                  isRepeat = false;
                   console.log('Left Limit!');
                   break;
                 }
@@ -259,6 +263,7 @@
     
           for (i = 0; i < 5; i++) {
             if (data.isLanding) {
+              isRepeat = false;
               break;
             }
             for (j = 0; j < 5; j++) {
@@ -275,7 +280,6 @@
                 } else {
                   data.isLanding = true;
                   isRepeat = false;
-                  clearInterval(action);
                   console.log('Max depth!');
                   break;
                 }
@@ -290,6 +294,7 @@
           drawField();
           ////jadge erase line and game is over
           if (data.isLanding) {
+            isRepeat = false;
             var valTmp = data.field[3].reduce(function (accumulator, currentValue, currentIndex, array) {
               return accumulator + currentValue;
             });
